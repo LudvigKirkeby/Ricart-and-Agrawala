@@ -21,29 +21,28 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Node struct {
+type Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	State         int64                  `protobuf:"varint,2,opt,name=state,proto3" json:"state,omitempty"`
-	Timestamp     int64                  `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	FromPort      int64                  `protobuf:"varint,2,opt,name=fromPort,proto3" json:"fromPort,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Node) Reset() {
-	*x = Node{}
+func (x *Request) Reset() {
+	*x = Request{}
 	mi := &file_proto_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Node) String() string {
+func (x *Request) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Node) ProtoMessage() {}
+func (*Request) ProtoMessage() {}
 
-func (x *Node) ProtoReflect() protoreflect.Message {
+func (x *Request) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,28 +54,81 @@ func (x *Node) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Node.ProtoReflect.Descriptor instead.
-func (*Node) Descriptor() ([]byte, []int) {
+// Deprecated: Use Request.ProtoReflect.Descriptor instead.
+func (*Request) Descriptor() ([]byte, []int) {
 	return file_proto_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Node) GetId() int64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *Node) GetState() int64 {
-	if x != nil {
-		return x.State
-	}
-	return 0
-}
-
-func (x *Node) GetTimestamp() int64 {
+func (x *Request) GetTimestamp() int64 {
 	if x != nil {
 		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *Request) GetFromPort() int64 {
+	if x != nil {
+		return x.FromPort
+	}
+	return 0
+}
+
+type Reply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Timestamp     int64                  `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	ToPort        int64                  `protobuf:"varint,2,opt,name=toPort,proto3" json:"toPort,omitempty"`
+	Ack           int64                  `protobuf:"varint,3,opt,name=ack,proto3" json:"ack,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Reply) Reset() {
+	*x = Reply{}
+	mi := &file_proto_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Reply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Reply) ProtoMessage() {}
+
+func (x *Reply) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Reply.ProtoReflect.Descriptor instead.
+func (*Reply) Descriptor() ([]byte, []int) {
+	return file_proto_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Reply) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *Reply) GetToPort() int64 {
+	if x != nil {
+		return x.ToPort
+	}
+	return 0
+}
+
+func (x *Reply) GetAck() int64 {
+	if x != nil {
+		return x.Ack
 	}
 	return 0
 }
@@ -89,7 +141,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_proto_proto_msgTypes[1]
+	mi := &file_proto_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -101,7 +153,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_proto_msgTypes[1]
+	mi := &file_proto_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -114,22 +166,25 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_proto_proto_rawDescGZIP(), []int{1}
+	return file_proto_proto_rawDescGZIP(), []int{2}
 }
 
 var File_proto_proto protoreflect.FileDescriptor
 
 const file_proto_proto_rawDesc = "" +
 	"\n" +
-	"\vproto.proto\"J\n" +
-	"\x04node\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
-	"\x05state\x18\x02 \x01(\x03R\x05state\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"\a\n" +
-	"\x05Empty2K\n" +
-	"\vnodeService\x12\x1e\n" +
-	"\vsendRequest\x12\x05.node\x1a\x06.Empty\"\x00\x12\x1c\n" +
-	"\tsendReply\x12\x05.node\x1a\x06.Empty\"\x00B)Z'Ricart and Agrawala implementation/grpcb\x06proto3"
+	"\vproto.proto\"C\n" +
+	"\arequest\x12\x1c\n" +
+	"\ttimestamp\x18\x01 \x01(\x03R\ttimestamp\x12\x1a\n" +
+	"\bfromPort\x18\x02 \x01(\x03R\bfromPort\"O\n" +
+	"\x05reply\x12\x1c\n" +
+	"\ttimestamp\x18\x01 \x01(\x03R\ttimestamp\x12\x16\n" +
+	"\x06toPort\x18\x02 \x01(\x03R\x06toPort\x12\x10\n" +
+	"\x03ack\x18\x03 \x01(\x03R\x03ack\"\a\n" +
+	"\x05Empty2O\n" +
+	"\vnodeService\x12!\n" +
+	"\vsendRequest\x12\b.request\x1a\x06.Empty\"\x00\x12\x1d\n" +
+	"\tsendReply\x12\x06.reply\x1a\x06.Empty\"\x00B)Z'Ricart and Agrawala implementation/grpcb\x06proto3"
 
 var (
 	file_proto_proto_rawDescOnce sync.Once
@@ -143,16 +198,17 @@ func file_proto_proto_rawDescGZIP() []byte {
 	return file_proto_proto_rawDescData
 }
 
-var file_proto_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_proto_proto_goTypes = []any{
-	(*Node)(nil),  // 0: node
-	(*Empty)(nil), // 1: Empty
+	(*Request)(nil), // 0: request
+	(*Reply)(nil),   // 1: reply
+	(*Empty)(nil),   // 2: Empty
 }
 var file_proto_proto_depIdxs = []int32{
-	0, // 0: nodeService.sendRequest:input_type -> node
-	0, // 1: nodeService.sendReply:input_type -> node
-	1, // 2: nodeService.sendRequest:output_type -> Empty
-	1, // 3: nodeService.sendReply:output_type -> Empty
+	0, // 0: nodeService.sendRequest:input_type -> request
+	1, // 1: nodeService.sendReply:input_type -> reply
+	2, // 2: nodeService.sendRequest:output_type -> Empty
+	2, // 3: nodeService.sendReply:output_type -> Empty
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -171,7 +227,7 @@ func file_proto_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_proto_rawDesc), len(file_proto_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

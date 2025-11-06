@@ -27,8 +27,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeServiceClient interface {
-	SendRequest(ctx context.Context, in *Node, opts ...grpc.CallOption) (*Empty, error)
-	SendReply(ctx context.Context, in *Node, opts ...grpc.CallOption) (*Empty, error)
+	SendRequest(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Empty, error)
+	SendReply(ctx context.Context, in *Reply, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type nodeServiceClient struct {
@@ -39,7 +39,7 @@ func NewNodeServiceClient(cc grpc.ClientConnInterface) NodeServiceClient {
 	return &nodeServiceClient{cc}
 }
 
-func (c *nodeServiceClient) SendRequest(ctx context.Context, in *Node, opts ...grpc.CallOption) (*Empty, error) {
+func (c *nodeServiceClient) SendRequest(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, NodeService_SendRequest_FullMethodName, in, out, cOpts...)
@@ -49,7 +49,7 @@ func (c *nodeServiceClient) SendRequest(ctx context.Context, in *Node, opts ...g
 	return out, nil
 }
 
-func (c *nodeServiceClient) SendReply(ctx context.Context, in *Node, opts ...grpc.CallOption) (*Empty, error) {
+func (c *nodeServiceClient) SendReply(ctx context.Context, in *Reply, opts ...grpc.CallOption) (*Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, NodeService_SendReply_FullMethodName, in, out, cOpts...)
@@ -63,8 +63,8 @@ func (c *nodeServiceClient) SendReply(ctx context.Context, in *Node, opts ...grp
 // All implementations must embed UnimplementedNodeServiceServer
 // for forward compatibility.
 type NodeServiceServer interface {
-	SendRequest(context.Context, *Node) (*Empty, error)
-	SendReply(context.Context, *Node) (*Empty, error)
+	SendRequest(context.Context, *Request) (*Empty, error)
+	SendReply(context.Context, *Reply) (*Empty, error)
 	mustEmbedUnimplementedNodeServiceServer()
 }
 
@@ -75,10 +75,10 @@ type NodeServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedNodeServiceServer struct{}
 
-func (UnimplementedNodeServiceServer) SendRequest(context.Context, *Node) (*Empty, error) {
+func (UnimplementedNodeServiceServer) SendRequest(context.Context, *Request) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendRequest not implemented")
 }
-func (UnimplementedNodeServiceServer) SendReply(context.Context, *Node) (*Empty, error) {
+func (UnimplementedNodeServiceServer) SendReply(context.Context, *Reply) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendReply not implemented")
 }
 func (UnimplementedNodeServiceServer) mustEmbedUnimplementedNodeServiceServer() {}
@@ -103,7 +103,7 @@ func RegisterNodeServiceServer(s grpc.ServiceRegistrar, srv NodeServiceServer) {
 }
 
 func _NodeService_SendRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Node)
+	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -115,13 +115,13 @@ func _NodeService_SendRequest_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: NodeService_SendRequest_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).SendRequest(ctx, req.(*Node))
+		return srv.(NodeServiceServer).SendRequest(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NodeService_SendReply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Node)
+	in := new(Reply)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func _NodeService_SendReply_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: NodeService_SendReply_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).SendReply(ctx, req.(*Node))
+		return srv.(NodeServiceServer).SendReply(ctx, req.(*Reply))
 	}
 	return interceptor(ctx, in, info, handler)
 }
