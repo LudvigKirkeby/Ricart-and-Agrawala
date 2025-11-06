@@ -42,21 +42,21 @@ func main() {
 			port:      i,
 			id:        i - (start_port - 1), // we want id to start at 1
 			state:     0,
-			node_map:  nil,
-			queue:     nil,
+			node_map:  make(map[int]proto.NodeService_SendClient),
+			queue:     []proto.NodeService_SendServer{},
 		}
 		go new_node.run()
 	}
 }
 
 func (n *Node) run() {
-	n.startServer(n.port)
+	go n.startServer(n.port)
 	// POSSIBLY ISSUE: Connecting before all servers are started, can be tested with logging
 	for i := start_port; i < node_count+start_port; i++ {
 		if n.port == i {
 			continue
 		}
-		n.connect(i)
+		go n.connect(i)
 	}
 
 	n.state = 0
@@ -100,12 +100,14 @@ func (n *Node) sendToAll() {
 
 	for port, stream := range n.node_map {
 		go func(p int, s proto.NodeService_SendClient) {
-			rep, err := s.Recv() // block until a reply comes
-			if err != nil {
-				log.Printf("[node %d] error receiving from %d: %v", n.port, p, err)
-				return
+			for {
+				rep, err := s.Recv() // block until a reply comes
+				if err != nil {
+					log.Printf("[node %d] error receiving from %d: %v", n.port, p, err)
+					return
+				}
+				replyCh <- rep
 			}
-			replyCh <- rep
 		}(port, stream) // ??? Kinda confused
 	}
 
@@ -132,29 +134,6 @@ func (n *Node) setLeader() {
 	// some critical process...
 	n.state = 0
 	n.exit()
-}
-
-// Should start server for a different address each time (8080, 8081...) one for each node
-// Server only handles receive and reply
-func (n *Node) startServer(port int) {
-	addr := fmt.Sprintf(":%d", port) // so its not hardcoded anymore
-	listener, err := net.Listen("tcp", addr)
-	if err != nil {
-		// logging
-	}
-
-	// Makes new GRPC server
-	grpc_server := grpc.NewServer()
-
-	// Registers the grpc server with the System struct
-	proto.RegisterNodeServiceServer(grpc_server, n)
-
-	// this blocks ???
-	err = grpc_server.Serve(listener)
-	if err != nil {
-		// logging
-	}
-	// logging like, "server started at... for node..."
 }
 
 // connects to another client with their port
@@ -199,4 +178,27 @@ func (n *Node) Send(stream proto.NodeService_SendServer) error {
 			}
 		}
 	}
+}
+
+// Should start server for a different address each time (8080, 8081...) one for each node
+// Server only handles receive and reply
+func (n *Node) startServer(port int) {
+	addr := fmt.Sprintf(":%d", port) // so its not hardcoded anymore
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		// logging
+	}
+
+	// Makes new GRPC server
+	grpc_server := grpc.NewServer()
+
+	// Registers the grpc server with the System struct
+	proto.RegisterNodeServiceServer(grpc_server, n)
+
+	// this blocks ???
+	err = grpc_server.Serve(listener)
+	if err != nil {
+		// logging
+	}
+	// logging like, "server started at... for node..."
 }
