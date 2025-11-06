@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "Ricart and Agrawala implementation/grpc"; // Path to proto file
+
+message node {
+  int64 id = 1;
+  int64 state = 2;
+  int64 timestamp = 3;
+}
+
+message Empty{}
+
+service nodeService {
+  rpc sendRequest(node) returns (Empty) {}
+  rpc sendReply(node) returns (Empty) {}
+}
