@@ -44,6 +44,7 @@ func main() {
 			state:     0,
 			node_map:  make(map[int]proto.NodeService_SendClient),
 			queue:     []proto.NodeService_SendServer{},
+
 		}
 		go new_node.run()
 	}
