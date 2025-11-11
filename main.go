@@ -20,7 +20,7 @@ var (
 	logger  *log.Logger
 )
 
-const nodeCount = 10000
+const nodeCount = 3
 
 var startPort = 8080
 
@@ -55,7 +55,7 @@ func main() {
 	defer logFile.Close()
 
 	// initial log
-	logEvent(-1, 0, "Logger Initialized")
+	logger.Printf("Logging initialized")
 
 	nodes := make([]*Node, nodeCount)
 	for i := 0; i < nodeCount; i++ {
@@ -70,7 +70,7 @@ func main() {
 		}
 		nodes[i] = n
 		go n.startServer() // listener
-		logEvent(n.id, n.state, "started listening on its port")
+		logEvent(n, "started listening on its port")
 	}
 
 	// allow servers and connections to be made before running
@@ -133,15 +133,15 @@ func (n *Node) sendToAll() {
 
 	// sends message to all connections (Notice that we take a connection from the map, reference their stream, and send to that specifically)
 	for port, connection := range connectionsCopy {
+		n.mutex.Lock()
+		n.timestamp++
+		n.mutex.Unlock()
+		// log timestamp here plz
 		fmt.Printf("Sending request from port [%d] to port [%d]\n", n.port, port)
-
 		if err := connection.stream.Send(msg); err != nil {
 			// log failed to send
 			continue
 		}
-		n.mutex.Lock()
-		n.timestamp++
-		n.mutex.Unlock()
 	}
 
 	// wait to receive all "yes"
@@ -208,6 +208,7 @@ func (n *Node) connect(port int) {
 		// Create a bidirectional stream
 		stream, err := client.Send(context.Background())
 		if err != nil {
+			logger.Fatal(err)
 			// logging
 			conn.Close()
 			time.Sleep(100 * time.Millisecond)
@@ -269,7 +270,28 @@ func (n *Node) Send(stream proto.NodeService_SendServer) error {
 			return err
 		}
 
-		if n.state == 2 || n.state == 1 && req.Timestamp > n.timestamp {
+		// deferring to stop deadlocking
+		shouldDefer := false
+
+		switch n.state {
+		case 2:
+			shouldDefer = true
+		case 1:
+			if req.Timestamp > n.timestamp {
+				shouldDefer = true
+			}
+			if req.Timestamp == n.timestamp && req.Port > int64(n.port) { // tiebreaker
+				shouldDefer = true
+			}
+		}
+
+		// timestamp comparison stuff, basically max(a, b) + 1 but without import
+		if req.Timestamp > n.timestamp {
+			n.timestamp = req.Timestamp
+		}
+		n.timestamp++
+
+		if shouldDefer {
 			n.queue = append(n.queue, stream) // we save the stream of the sender for later use
 		} else {
 			if err := stream.Send(&proto.Reply{}); err != nil {
@@ -285,6 +307,7 @@ func (n *Node) startServer() {
 	addr := fmt.Sprintf(":%d", n.port) // so its not hardcoded anymore
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
+		logger.Fatal(err)
 		// logging
 	}
 
@@ -298,14 +321,20 @@ func (n *Node) startServer() {
 	// this blocks ???
 	err = grpcServer.Serve(listener)
 	if err != nil {
+		logger.Fatal(err)
 		// logging
 	}
 
 	// logging like, "server started at... for node..."
 }
 
-func logEvent(nodeId int, state int, msg string) {
+// ...interface means that function can accept any number of arguments of any type”
+func logEvent(n *Node, format string, args ...interface{}) {
 	logMu.Lock()
 	defer logMu.Unlock()
-	logger.Printf("[NODE %d | %d] %s\n", nodeId, state, msg)
+	msg := fmt.Sprintf(format, args)
+	logger.Printf(
+		"[NODE %d | port %d | state %d | lamport=%d], %s",
+		n.id, n.port, n.state, n.timestamp, msg,
+	)
 }

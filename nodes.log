@@ -10003,3 +10003,56 @@
 2025/11/11 16:19:36.993191 [NODE 9998 | 0] started listening on its port
 2025/11/11 16:19:36.993195 [NODE 9999 | 0] started listening on its port
 2025/11/11 16:19:36.993202 [NODE 10000 | 0] started listening on its port
+2025/11/11 16:28:52.745105 [NODE -1 | 0] Logger Initialized
+2025/11/11 16:28:52.745153 [NODE 1 | 0] started listening on its port
+2025/11/11 16:28:52.745159 [NODE 2 | 0] started listening on its port
+2025/11/11 16:28:52.745163 [NODE 3 | 0] started listening on its port
+2025/11/11 16:29:04.259885 [NODE -1 | 0] Logger Initialized
+2025/11/11 16:29:04.259923 [NODE 1 | 0] started listening on its port
+2025/11/11 16:29:04.259928 [NODE 2 | 0] started listening on its port
+2025/11/11 16:29:04.259931 [NODE 3 | 0] started listening on its port
+2025/11/11 16:29:04.259934 [NODE 4 | 0] started listening on its port
+2025/11/11 16:29:04.259938 [NODE 5 | 0] started listening on its port
+2025/11/11 16:29:04.259941 [NODE 6 | 0] started listening on its port
+2025/11/11 16:29:04.259944 [NODE 7 | 0] started listening on its port
+2025/11/11 16:29:04.259946 [NODE 8 | 0] started listening on its port
+2025/11/11 16:29:04.259952 [NODE 9 | 0] started listening on its port
+2025/11/11 16:29:04.259956 [NODE 10 | 0] started listening on its port
+2025/11/11 16:29:41.173881 [NODE -1 | 0] Logger Initialized
+2025/11/11 16:29:41.173924 [NODE 1 | 0] started listening on its port
+2025/11/11 16:29:41.173928 [NODE 2 | 0] started listening on its port
+2025/11/11 16:29:41.173931 [NODE 3 | 0] started listening on its port
+2025/11/11 16:29:41.173933 [NODE 4 | 0] started listening on its port
+2025/11/11 16:29:41.173935 [NODE 5 | 0] started listening on its port
+2025/11/11 16:29:41.173938 [NODE 6 | 0] started listening on its port
+2025/11/11 16:29:41.173940 [NODE 7 | 0] started listening on its port
+2025/11/11 16:29:41.173942 [NODE 8 | 0] started listening on its port
+2025/11/11 16:29:41.173947 [NODE 9 | 0] started listening on its port
+2025/11/11 16:29:41.173950 [NODE 10 | 0] started listening on its port
+2025/11/11 16:29:57.983766 [NODE -1 | 0] Logger Initialized
+2025/11/11 16:29:57.983809 [NODE 1 | 0] started listening on its port
+2025/11/11 16:29:57.983812 [NODE 2 | 0] started listening on its port
+2025/11/11 16:29:57.983815 [NODE 3 | 0] started listening on its port
+2025/11/11 16:42:34.433402 Logging initialized
+2025/11/11 16:42:34.433439 [NODE 1 | port 8080 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:42:34.433446 [NODE 2 | port 8081 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:42:34.433450 [NODE 3 | port 8082 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:42:44.791307 Logging initialized
+2025/11/11 16:42:44.791354 [NODE 1 | port 8080 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:42:44.791363 [NODE 2 | port 8081 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:42:44.791367 [NODE 3 | port 8082 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:34.314047 Logging initialized
+2025/11/11 16:43:34.314086 [NODE 1 | port 8080 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:34.314093 [NODE 2 | port 8081 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:34.314095 [NODE 3 | port 8082 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333487 Logging initialized
+2025/11/11 16:43:50.333526 [NODE 1 | port 8080 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333531 [NODE 2 | port 8081 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333534 [NODE 3 | port 8082 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333537 [NODE 4 | port 8083 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333539 [NODE 5 | port 8084 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333545 [NODE 6 | port 8085 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333562 [NODE 7 | port 8086 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333565 [NODE 8 | port 8087 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333570 [NODE 9 | port 8088 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
+2025/11/11 16:43:50.333572 [NODE 10 | port 8089 | state 0 | lamport=0], started listening on its port%!(EXTRA []interface {}=[])
