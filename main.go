@@ -1,7 +1,7 @@
 package main
 
 import (
-	proto "Ricart_and_Agrawala_implementation/grpc" // adjust to your generated package path
+	proto "Ricart-and-Agrawala/grpc" // adjust to your generated package path
 	"context"
 	"log"
 
@@ -44,7 +44,6 @@ func main() {
 			state:     0,
 			node_map:  make(map[int]proto.NodeService_SendClient),
 			queue:     []proto.NodeService_SendServer{},
-
 		}
 		go new_node.run()
 	}
