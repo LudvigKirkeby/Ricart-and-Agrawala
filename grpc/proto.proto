@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "Ricart and Agrawala implementation/grpc"; // Path to proto file
+
+
+message Request {
+  int64 timestamp = 1;
+  int64 Port = 2;
+}
+
+message Reply {
+  int64 timestamp = 1;
+  int64 toPort = 2;
+  int64 ack = 3;
+}
+
+service nodeService {
+  rpc send(stream Request) returns (stream Reply) {}
+}
