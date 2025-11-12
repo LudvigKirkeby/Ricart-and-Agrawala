@@ -32,12 +32,12 @@ type connection struct {
 
 type Node struct {
 	proto.UnimplementedNodeServiceServer
-	mutex     sync.Mutex // lock for lamport stuff
-	state     int
-	timestamp int64
-	id        int
-	port      int
-
+	mutex       sync.Mutex // lock for lamport stuff
+	state       int
+	timestamp   int64
+	id          int
+	port        int
+	myReqTs     int64
 	connections map[int]*connection
 	queue       []proto.NodeService_SendServer // queue of streams to reply to
 }
@@ -65,6 +65,7 @@ func main() {
 			port:        port,
 			id:          i + 1,
 			state:       0,
+			myReqTs:     0,
 			connections: make(map[int]*connection),
 			queue:       nil,
 		}
@@ -110,6 +111,8 @@ func (n *Node) run() {
 func (n *Node) enter() {
 	// set state to 1 for wanted and start sending requests
 	n.mutex.Lock()
+	n.timestamp++
+	n.myReqTs = n.timestamp
 	n.state = 1
 	n.mutex.Unlock()
 	n.sendToAll()
@@ -118,7 +121,7 @@ func (n *Node) enter() {
 func (n *Node) sendToAll() {
 	n.mutex.Lock()
 	msg := &proto.Request{
-		Timestamp: n.timestamp,
+		Timestamp: n.myReqTs,
 		Port:      int64(n.port),
 	}
 	n.mutex.Unlock()
@@ -272,34 +275,40 @@ func (n *Node) Send(stream proto.NodeService_SendServer) error {
 			return err
 		}
 
-		// deferring to stop deadlocking
-		shouldDefer := false
-
-		switch n.state {
-		case 2:
-			shouldDefer = true
-		case 1:
-			if req.Timestamp > n.timestamp {
-				shouldDefer = true
-			}
-			if req.Timestamp == n.timestamp && req.Port > int64(n.port) { // tiebreaker
-				shouldDefer = true
-			}
-		}
-
 		// timestamp comparison stuff, basically max(a, b) + 1 but without import
+		n.mutex.Lock()
 		if req.Timestamp > n.timestamp {
 			n.timestamp = req.Timestamp
 		}
 		n.timestamp++
+		n.mutex.Unlock()
+
+		// deferring to stop deadlocking
+		shouldDefer := false
+		switch n.state {
+		case 2:
+			shouldDefer = true
+		case 1:
+			if req.Timestamp > n.myReqTs {
+				shouldDefer = true
+			}
+			if req.Timestamp == n.myReqTs && req.Port > int64(n.port) { // tiebreaker
+				shouldDefer = true
+			}
+		}
 
 		if shouldDefer {
+			n.mutex.Lock()
 			n.queue = append(n.queue, stream) // we save the stream of the sender for later use
+			n.mutex.Unlock()
+			logEvent(n, "DEFER request from %d (reqTs=%d)", req.Port, req.Timestamp)
+			continue
 		} else {
 			if err := stream.Send(&proto.Reply{}); err != nil {
 				return err
 			}
 		}
+
 	}
 }
 
