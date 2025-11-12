@@ -96,6 +96,17 @@ func (n *Node) run() {
 	}
 
 	for {
+		n.mutex.Lock()
+		connCount := len(n.connections)
+		n.mutex.Unlock()
+		if connCount >= nodeCount-1 {
+			break
+		}
+		logEvent(n, "WAITING for connections: have %d, need %d", connCount, nodeCount-1)
+		time.Sleep(50 * time.Millisecond)
+	}
+
+	for {
 		if n.state == 2 {
 			n.setLeader()
 		}
@@ -140,7 +151,7 @@ func (n *Node) sendToAll() {
 		n.timestamp++
 		n.mutex.Unlock()
 
-		logEvent(n, "Sending request from port [%d] to port [%d]", n.port, port) //writing to log file
+		logEvent(n, "SENDING request from port [%d] to port [%d]", n.port, port) //writing to log file
 		fmt.Printf("Sending request from port [%d] to port [%d]\n", n.port, port)
 		if err := connection.stream.Send(msg); err != nil {
 			// log failed to send
@@ -149,13 +160,14 @@ func (n *Node) sendToAll() {
 	}
 
 	// wait to receive all "yes"
-	expected := len(connectionsCopy)
+	expected := nodeCount - 1
 	received := 0
 
 	for received < expected {
 		for _, p := range connectionsCopy {
 			select {
 			case <-p.replyCh:
+
 				received++
 			default:
 			}
@@ -179,14 +191,14 @@ func (n *Node) exit() {
 		_ = s.Send(&proto.Reply{}) // name doesnt matter
 	}
 	n.queue = nil
-	logEvent(n, "Has exited the critical process") //writing to log file
+	logEvent(n, "Has EXITED the critical process") //writing to log file
 	fmt.Printf("[Node %d] has exited the critical process\n", n.port)
 	n.state = 0
 	n.mutex.Unlock()
 }
 
 func (n *Node) setLeader() {
-	logEvent(n, "has entered the critical process") //writing to log file
+	logEvent(n, "has ENTERED the critical process") //writing to log file
 	fmt.Printf("[Node %d] has entered the critical process\n", n.port)
 	// some critical process...
 	time.Sleep(100 * time.Millisecond)
@@ -285,6 +297,7 @@ func (n *Node) Send(stream proto.NodeService_SendServer) error {
 
 		// deferring to stop deadlocking
 		shouldDefer := false
+
 		switch n.state {
 		case 2:
 			shouldDefer = true

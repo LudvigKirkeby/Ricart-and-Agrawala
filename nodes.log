@@ -1,0 +1,30 @@
+2025/11/12 19:06:55.301973 Logging initialized
+2025/11/12 19:06:55.302009 [NODE 1 | port 8080 | state 0 | lamport=0], Started listening on its port
+2025/11/12 19:06:55.302021 [NODE 2 | port 8081 | state 0 | lamport=0], Started listening on its port
+2025/11/12 19:06:55.302024 [NODE 3 | port 8082 | state 0 | lamport=0], Started listening on its port
+2025/11/12 19:06:55.402669 [NODE 3 | port 8082 | state 0 | lamport=0], WAITING for connections: have 0, need 2
+2025/11/12 19:06:55.402779 [NODE 2 | port 8081 | state 0 | lamport=0], WAITING for connections: have 0, need 2
+2025/11/12 19:06:55.403013 [NODE 1 | port 8080 | state 0 | lamport=0], WAITING for connections: have 0, need 2
+2025/11/12 19:06:55.453224 [NODE 2 | port 8081 | state 1 | lamport=2], SENDING request from port [8081] to port [8080]
+2025/11/12 19:06:55.453379 [NODE 1 | port 8080 | state 1 | lamport=2], SENDING request from port [8080] to port [8082]
+2025/11/12 19:06:55.453433 [NODE 3 | port 8082 | state 1 | lamport=2], SENDING request from port [8082] to port [8081]
+2025/11/12 19:06:55.453630 [NODE 2 | port 8081 | state 1 | lamport=3], SENDING request from port [8081] to port [8082]
+2025/11/12 19:06:55.453671 [NODE 1 | port 8080 | state 1 | lamport=3], SENDING request from port [8080] to port [8081]
+2025/11/12 19:06:55.453775 [NODE 3 | port 8082 | state 1 | lamport=3], SENDING request from port [8082] to port [8080]
+2025/11/12 19:06:55.453875 [NODE 2 | port 8081 | state 1 | lamport=4], DEFER request from 8082 (reqTs=1)
+2025/11/12 19:06:55.453913 [NODE 1 | port 8080 | state 1 | lamport=4], DEFER request from 8081 (reqTs=1)
+2025/11/12 19:06:55.453981 [NODE 1 | port 8080 | state 1 | lamport=5], DEFER request from 8082 (reqTs=1)
+2025/11/12 19:06:55.484850 [NODE 1 | port 8080 | state 2 | lamport=5], has ENTERED the critical process
+2025/11/12 19:06:55.585174 [NODE 1 | port 8080 | state 2 | lamport=5], Has EXITED the critical process
+2025/11/12 19:06:55.585241 [NODE 1 | port 8080 | state 1 | lamport=7], SENDING request from port [8080] to port [8082]
+2025/11/12 19:06:55.585308 [NODE 1 | port 8080 | state 1 | lamport=8], SENDING request from port [8080] to port [8081]
+2025/11/12 19:06:55.585547 [NODE 3 | port 8082 | state 1 | lamport=7], DEFER request from 8080 (reqTs=6)
+2025/11/12 19:06:55.585603 [NODE 2 | port 8081 | state 1 | lamport=7], DEFER request from 8080 (reqTs=6)
+2025/11/12 19:06:55.608882 [NODE 2 | port 8081 | state 2 | lamport=7], has ENTERED the critical process
+2025/11/12 19:06:55.709848 [NODE 2 | port 8081 | state 2 | lamport=7], Has EXITED the critical process
+2025/11/12 19:06:55.709930 [NODE 2 | port 8081 | state 1 | lamport=9], SENDING request from port [8081] to port [8082]
+2025/11/12 19:06:55.709974 [NODE 2 | port 8081 | state 1 | lamport=10], SENDING request from port [8081] to port [8080]
+2025/11/12 19:06:55.710119 [NODE 3 | port 8082 | state 1 | lamport=9], DEFER request from 8081 (reqTs=8)
+2025/11/12 19:06:55.710174 [NODE 1 | port 8080 | state 1 | lamport=9], DEFER request from 8081 (reqTs=8)
+2025/11/12 19:06:55.734479 [NODE 3 | port 8082 | state 2 | lamport=9], has ENTERED the critical process
+2025/11/12 19:06:55.835817 [NODE 3 | port 8082 | state 2 | lamport=9], Has EXITED the critical process
