@@ -70,7 +70,7 @@ func main() {
 		}
 		nodes[i] = n
 		go n.startServer() // listener
-		logEvent(n, "started listening on its port")
+		logEvent(n, "Started listening on its port")
 	}
 
 	// allow servers and connections to be made before running
@@ -136,7 +136,8 @@ func (n *Node) sendToAll() {
 		n.mutex.Lock()
 		n.timestamp++
 		n.mutex.Unlock()
-		// log timestamp here plz
+
+		logEvent(n, "Sending request from port [%d] to port [%d]", n.port, port) //writing to log file
 		fmt.Printf("Sending request from port [%d] to port [%d]\n", n.port, port)
 		if err := connection.stream.Send(msg); err != nil {
 			// log failed to send
@@ -175,12 +176,14 @@ func (n *Node) exit() {
 		_ = s.Send(&proto.Reply{}) // name doesnt matter
 	}
 	n.queue = nil
+	logEvent(n, "Has exited the critical process") //writing to log file
 	fmt.Printf("[Node %d] has exited the critical process\n", n.port)
 	n.state = 0
 	n.mutex.Unlock()
 }
 
 func (n *Node) setLeader() {
+	logEvent(n, "has entered the critical process") //writing to log file
 	fmt.Printf("[Node %d] has entered the critical process\n", n.port)
 	// some critical process...
 	time.Sleep(100 * time.Millisecond)
@@ -190,7 +193,6 @@ func (n *Node) setLeader() {
 // connects to another client with their port
 func (n *Node) connect(port int) {
 	addr := fmt.Sprintf("localhost:%d", port) // so its not hardcoded anymore
-
 	for {
 		if port == n.port {
 			return
@@ -198,7 +200,7 @@ func (n *Node) connect(port int) {
 
 		conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
-			// logging
+			logger.Fatalf("[ERROR]: %v", err)
 			time.Sleep(100 * time.Millisecond)
 			continue
 		}
@@ -208,8 +210,7 @@ func (n *Node) connect(port int) {
 		// Create a bidirectional stream
 		stream, err := client.Send(context.Background())
 		if err != nil {
-			logger.Fatal(err)
-			// logging
+			logger.Fatalf("[ERROR]: %v", err)
 			conn.Close()
 			time.Sleep(100 * time.Millisecond)
 			continue
@@ -235,7 +236,8 @@ func (n *Node) Receive(port int, c *connection) {
 	for {
 		rep, err := c.stream.Recv()
 		if err != nil {
-			log.Printf("[Node %d] recv error from %d: %v\n", n.port, port, err)
+			logEvent(n, "Received error from %d: %v", port, err)                //writing to log file
+			log.Printf("[Node %d] recv error from %d: %v\n", n.port, port, err) //prints statement in terminal for easier debugging
 			// connection broken -> cleanup and attempt reconnect
 			n.mutex.Lock()
 			if c.conn != nil {
@@ -307,8 +309,7 @@ func (n *Node) startServer() {
 	addr := fmt.Sprintf(":%d", n.port) // so its not hardcoded anymore
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
-		logger.Fatal(err)
-		// logging
+		logger.Fatalf("[ERROR]: %v", err)
 	}
 
 	// Makes new GRPC server
@@ -316,13 +317,12 @@ func (n *Node) startServer() {
 
 	// Registers the grpc server with the System struct
 	proto.RegisterNodeServiceServer(grpcServer, n)
-	log.Printf("node %d listening on %s\n", n.port, addr)
+	log.Printf("node %d listening on %s\n", n.port, addr) //this is logged in the file as well on line 73
 
 	// this blocks ???
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		logger.Fatal(err)
-		// logging
+		logger.Fatalf("[ERROR]: %v", err)
 	}
 
 	// logging like, "server started at... for node..."
@@ -332,7 +332,7 @@ func (n *Node) startServer() {
 func logEvent(n *Node, format string, args ...interface{}) {
 	logMu.Lock()
 	defer logMu.Unlock()
-	msg := fmt.Sprintf(format, args)
+	msg := fmt.Sprintf(format, args...)
 	logger.Printf(
 		"[NODE %d | port %d | state %d | lamport=%d], %s",
 		n.id, n.port, n.state, n.timestamp, msg,
